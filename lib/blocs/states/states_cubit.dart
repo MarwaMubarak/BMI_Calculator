@@ -10,7 +10,7 @@ class StatesCubit extends Cubit <StatesState>
     return BlocProvider.of(context);
   }
 
-   int ageCounter=20;
+  int ageCounter=20;
    int weightCounter=40;
    int heightCounter=150;
    bool isMale=true;
