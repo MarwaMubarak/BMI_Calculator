@@ -9,8 +9,8 @@ class ResultView extends StatelessWidget {
   final int weight;
   final int height;
 
-  const ResultView({Key? key, required this.result, required this.age, required this.isMale,required this.weight,required this.height}) : super(key: key);
 
+   const ResultView({Key? key, required this.result, required this.age, required this.isMale,required this.weight,required this.height}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,7 +58,7 @@ class ResultView extends StatelessWidget {
                     onPressed: (){
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) =>  const HomeView()),
+                        MaterialPageRoute(builder: (context) =>   HomeView()),
                       );
                     },
                     child: const Text('Recalculate BMI',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 30,color: Colors.white),),
@@ -66,7 +66,7 @@ class ResultView extends StatelessWidget {
                 ),
                 const SizedBox(
                   height: 20,
-                )
+                ),
               ],
             ),
           )
