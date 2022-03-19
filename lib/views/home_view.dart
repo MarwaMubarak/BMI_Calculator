@@ -2,12 +2,43 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:task_5/blocs/states/states_cubit.dart';
 import 'package:task_5/views/result_view.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class HomeView extends StatelessWidget {
+class HomeView extends StatefulWidget {
   const HomeView({Key? key}) : super(key: key);
 
   @override
+  State<HomeView> createState() => _HomeViewState();
+}
+
+class _HomeViewState extends State<HomeView> {
+
+  var lastResult ;
+  bool resVis=false;
+
+  setResult()async
+  {
+    SharedPreferences _pref = await SharedPreferences.getInstance();
+    _pref.setDouble('lastRes', lastResult);
+  }
+
+  getResult()async
+  {
+    SharedPreferences _pref = await SharedPreferences.getInstance();
+    setState(() {
+    if(_pref.getDouble('lastRes')==null) {
+        resVis = false;
+      }
+    else
+      {
+        resVis=true;
+      }
+      lastResult=_pref.getDouble('lastRes');
+    });
+  }
+  @override
   Widget build(BuildContext context) {
+    getResult();
     return BlocProvider(
       create: (context) => StatesCubit(),
       child: BlocConsumer<StatesCubit, StatesState>(
@@ -245,7 +276,12 @@ class HomeView extends StatelessWidget {
                       style: ButtonStyle(
                         backgroundColor: MaterialStateProperty.all(Colors.teal.shade900),
                       ),
-                      onPressed: (){
+                      onPressed: ()async
+                      {
+                        setState(() {
+                          lastResult=(cubit.weightCounter/((cubit.heightCounter/100.0)*(cubit.heightCounter/100.0)));
+                        });
+                       setResult();
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) =>  ResultView(result: (cubit.weightCounter/((cubit.heightCounter/100.0)*(cubit.heightCounter/100.0))), age: cubit.ageCounter, isMale: cubit.isMale, weight: cubit.weightCounter, height: cubit.heightCounter)),
@@ -256,6 +292,17 @@ class HomeView extends StatelessWidget {
                   ),
                   const SizedBox(
                     height: 20,
+                  ),
+                  Visibility(
+                      visible: resVis,
+                      child:Container(
+                        width: 300,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: Colors.teal.withOpacity(0.2),
+                        ),
+                        child:  Center(child: Text('Your Last BMI: ${lastResult?.toStringAsFixed(3)}',style: const TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 18),)),
+                      )
                   )
                 ],
               ),
